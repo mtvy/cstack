@@ -41,23 +41,13 @@ STACK_STATUS stack_dtor(CStack *stack)
     
     stack->capacity = stack->item_size = STACK_NUMBER_POISON;
 
-    /*
+    free(stack->data);
 
-    
-    
+    (STACK_DATA_TYPE*) stack->data = STACK_DELETE_POISON;
 
-    if (!ptrValid(this_->dataWrapper)) {
-        fprintf(this_->logStream, "ERROR: pointer to the data is invalid!\n");
-        return STACK_BAD_DATA_PTR;
-    }
+    printf("???\n");
 
-    free(this_->dataWrapper);
-    
-    this_->dataWrapper = (STACK_CANARY_TYPE*)STACK_FREED_PTR;
-    this_->data        = (STACK_TYPE*)STACK_FREED_PTR;
-
-    return STACK_HEALTH_CHECK(this_);
-    */
+    return stack_is_valid(stack);
 }
 
 /*

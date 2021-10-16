@@ -6,7 +6,9 @@ int main()
     
     stack_ctor(&stack);
 
-    STACK_PRINT_CANNY
+    STACK_PRINT_CANARY
+
+    printf("VALID? - %d\n", stack_dtor(&stack));
 
     return 0;
 }
