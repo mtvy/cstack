@@ -1,16 +1,16 @@
 # CStack lib
 
-## Debug options
+### Debug options
 
 ...
 
-## Building
+### Building
 
 ...
 
-## TODO
+### To do
 1. Basic stack structure 
 
-## Done
+### Done
 
 ...

@@ -1,27 +1,21 @@
 //=================================================================================================================
-//           [$ Date: 10.10.2021 $]
-//
-//           [If RUSSIAN CHARS below are UNREADABLE, check this file codepage. It should be CP1251, or UTF-8 etc.]
+//              [$ Date: 10.10.2021 $]
 //=================================================================================================================
 //!
-//! @mainpage 
+//! @mainpage   cstack.h
 //!          
 //! @copyright  (C) Mtvy (Matvei Prudnikov)
 //! @author     Telegram <@mtvyp>
-//! @date     
+//! @date       10.10.2021
 //!
-//! @note     
+//! @note       Stack library 
 //!
-//! @warning  
-//!
-//! @file     
-//!
-//! @brief    
+//! @file       cstack.h
 //!
 //=================================================================================================================
 
-#ifndef CHRLIB_HEADER_INCLUDE
-#define CHRLIB_HEADER_INCLUDE
+#ifndef CSTACK_HEADER_INCLUDE
+#define CSTACK_HEADER_INCLUDE
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -34,26 +28,36 @@ typedef unsigned long long STACK_CANARY_TYPE;
 const STACK_CANARY_TYPE STACK_BEGIN_CANARY = 0xABC0C0DE;
 const STACK_CANARY_TYPE STACK_END_CANARY   = 0xABC1C0DE;
 
+const size_t STACK_NUMBER_POISON = -8;   
+
 
 enum STACK_STATUS
 {
-    STACK_NULL ,
-    STACK_WORKS,
-    STACK_WRONG,
+    STACK_INVALID,
+    STACK_VALID  ,
 };
 
 enum STACK_CONSTS
 {
-    STACK_INIT_CAPACITY_CONST = 2,
+    STACK_NULL         ,
+    STACK_PICK_NEXT    ,
+    STACK_INIT_CAPACITY,
 };
+
 
 struct CStack
 {
-    STACK_DATA_TYPE *data;
-
-    size_t capacity;
-    size_t item_size;
+    STACK_DATA_TYPE *data     ;
+    size_t           capacity ;
+    size_t           item_size;
 };
+
+
+STACK_STATUS stack_is_valid(void *ptr);
+
+STACK_STATUS stack_check_health(CStack *stack);
+
+STACK_STATUS stack_put_canary(CStack *stack, STACK_CONSTS BYTES, STACK_CANARY_TYPE SIDE_CANARY);
 
 STACK_STATUS stack_ctor(CStack *stack);
 
@@ -69,7 +73,20 @@ STACK_STATUS stack_dumpToStream(CStack *stack, FILE *out);
 
 STACK_STATUS stack_reallocate(CStack *stack, size_t capacity);
 
-STACK_STATUS stack_healthCheck(CStack *stack); 
 
 
-#endif // CHRLIB_HEADER_INCLUDE
+#define STACK_PRINT_CANNY { printf(            \
+        "|*Data Value After Push Canary*    \n" \
+        "|                     left_ptr: %p  \n" \
+        "|                    right_ptr: %p   \n" \
+        "|                  int_0_value: %d    \n" \
+        "|                  int_1_value: %d     \n" \
+        "|---------------------------------------\n",\
+          stack.data[0],   stack.data[1],             \
+          stack.data[0],   stack.data[1],              \
+          stack.data[0],   stack.data[1]                \
+                                  );                     \
+                          }
+
+
+#endif // CSTACK_HEADER_INCLUDE
