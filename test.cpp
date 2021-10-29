@@ -9,6 +9,14 @@ int main()
     STACK_PRINT_CANARY
 
     stack_push(&stack, 8);
+    
+    STACK_PRINT_CANARY
+    
+    stack_push(&stack, -2);
+    
+    STACK_PRINT_CANARY
+    
+    stack_push(&stack, 3);
 
     STACK_PRINT_CANARY
 

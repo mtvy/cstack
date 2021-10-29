@@ -19,25 +19,36 @@ STACK_STATUS stack_put_canary(CStack *stack, size_t bytes, STACK_CANARY_TYPE SID
 
 STACK_STATUS stack_dump(CStack *stack, FILE *log_file, const int line, const char* file, const char* stack_name)
 {
-    
+    //
     
     return stack_is_valid(stack);
 }
 
 STACK_STATUS stack_reallocate(CStack *stack, size_t capacity)
 {
-    return stack_is_valid( stack->data = (STACK_DATA_TYPE*) realloc(stack->data, capacity * sizeof(STACK_DATA_TYPE)) );
+    STACK_DATA_TYPE *dup_data = stack->data;
+
+    stack->data = (STACK_DATA_TYPE*) calloc( capacity, sizeof(STACK_DATA_TYPE) );
+
+    for (int index = 0; index < stack->item_size; index++)
+    {
+        stack->data[index] = *dup_data;
+        dup_data++;
+    }
+    
+    free(dup_data);
+
+    return stack_is_valid(stack);
 }
 
 STACK_STATUS stack_ctor(CStack *stack)
 {
-    
-    stack->data = (STACK_DATA_TYPE*) malloc(2 * sizeof(STACK_DATA_TYPE));
+    stack->capacity = stack->item_size = STACK_INIT_NUM;
+
+    stack_reallocate(stack, stack->capacity);
     
     stack_put_canary(stack, STACK_NULL     , STACK_BEGIN_CANARY);
     stack_put_canary(stack, STACK_PICK_NEXT, STACK_END_CANARY  );
-
-    stack->capacity = stack->item_size = STACK_INIT_NUM;
 
     return stack_is_valid(stack);
 }
@@ -59,19 +70,16 @@ STACK_STATUS stack_dtor(CStack *stack)
 STACK_STATUS stack_push(CStack *stack, int item)
 {
     stack_is_valid(stack);
-    printf("VAL: %d\n", stack->item_size);
-    printf("VAL: %d\n", stack->capacity);
-    printf("VAL: %d\n", stack->data[stack->item_size]);
 
-    if ( stack_check_health(stack) ) return stack->status;
+    if ( stack_check_health(stack) == STACK_INVALID ) return stack->status;
 
     if ( stack->item_size == stack->capacity )
-        stack->status = stack_reallocate(stack, stack->capacity++);
+    {
+        stack->capacity = stack->capacity + 2;
+        stack->status   = stack_reallocate(stack, stack->capacity);
+    }
 
-    printf("VAL: %d\n", stack->item_size);
-    printf("VAL: %d\n", stack->capacity);
-    
-    stack->data[stack->item_size++] = (STACK_DATA_TYPE) item;
+    stack->data[stack->item_size - 1] = (STACK_DATA_TYPE) item;
     stack_put_canary(stack, stack->capacity, STACK_END_CANARY);
     
     stack->item_size++;

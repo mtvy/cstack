@@ -78,33 +78,37 @@ STACK_STATUS stack_pop (CStack *stack, STACK_DATA_TYPE* item);
 
 #define STACK_DUMP (stack, file) stack_dump (stack, file, __LINE__, __FILE__, #stack_name);
 
-#define STACK_PRINT_CANARY         printf(     \
-        "|*Data Value After Push Canary*    \n" \
-        "|                     left_ptr: %p  \n" \
-        "|                    right_ptr: %p   \n" \
-        "|                  int_0_value: %d    \n" \
-        "|                  int_1_value: %d     \n" \
-        "|                  int_2_value: %d      \n" \
-        "|                  int_3_value: %d       \n" \
-        "|                  int_4_value: %d        \n" \
-        "|                  int_5_value: %d         \n" \
-        "|                  int_0_value: %p    \n" \
-        "|                  int_1_value: %p     \n" \
-        "|                  int_2_value: %p      \n" \
-        "|                  int_3_value: %p       \n" \
-        "|                  int_4_value: %p        \n" \
-        "|                  int_5_value: %p         \n" \
-        "|-------------------------------------------\n",\
-          stack.data[0],   stack.data[1],                 \
-          stack.data[0],   stack.data[1],                  \
-          stack.data[1],   stack.data[2],                   \
-          stack.data[3],   stack.data[4],                    \
-          stack.data[5],   stack.data[6],                     \
-          stack.data[0],   stack.data[1],                      \
-          stack.data[1],   stack.data[2],                       \
-          stack.data[3],   stack.data[4],                        \
-          stack.data[5],   stack.data[6]                          \
-                                         );                        \
+#define STACK_PRINT_CANARY        printf(           \
+        "|*Data Value After Push Canary*            \n"    \
+        "|                     left_ptr: %p         \n"    \
+        "|                    right_ptr: %p         \n"    \
+        "|                  int_0_value: %d         \n"    \
+        "|                             +---> %p     \n|\n" \
+        "|                  int_1_value: %d         \n"    \
+        "|                             +---> %p     \n|\n" \
+        "|                  int_2_value: %d         \n"    \
+        "|                             +---> %p     \n|\n" \
+        "|                  int_3_value: %d         \n"    \
+        "|                             +---> %p     \n|\n" \
+        "|                  int_4_value: %d         \n"    \
+        "|                             +---> %p     \n|\n" \
+        "|                  int_5_value: %d         \n"    \
+        "|                             +---> %p     \n|\n" \
+        "|                  int_6_value: %d         \n"    \
+        "|                             +---> %p     \n|\n" \
+        "|                  int_7_value: %d         \n"    \
+        "|                             +---> %p     \n"    \
+        "|-------------------------------------------------\n",\
+                            stack.data[0],   stack.data[1],    \
+                            stack.data[0],   stack.data[0],    \
+                            stack.data[1],   stack.data[1],    \
+                            stack.data[2],   stack.data[2],    \
+                            stack.data[3],   stack.data[3],    \
+                            stack.data[4],   stack.data[4],    \
+                            stack.data[5],   stack.data[5],    \
+                            stack.data[6],   stack.data[6],    \
+                            stack.data[7],   stack.data[7]     \
+                                        );                     \
 
 
 #endif // CSTACK_HEADER_INCLUDE
