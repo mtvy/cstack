@@ -78,7 +78,7 @@ STACK_STATUS stack_pop (CStack *stack, STACK_DATA_TYPE* item);
 
 #define STACK_DUMP (stack, file) stack_dump (stack, file, __LINE__, __FILE__, #stack_name);
 
-#define STACK_PRINT_CANARY        printf(           \
+#define STACK_PRINT_CANARY  printf(                 \
         "|*Data Value After Push Canary*            \n"    \
         "|                     left_ptr: %p         \n"    \
         "|                    right_ptr: %p         \n"    \
@@ -108,7 +108,7 @@ STACK_STATUS stack_pop (CStack *stack, STACK_DATA_TYPE* item);
                             stack.data[5],   stack.data[5],    \
                             stack.data[6],   stack.data[6],    \
                             stack.data[7],   stack.data[7]     \
-                                        );                     \
+                                  );                           \
 
 
 #endif // CSTACK_HEADER_INCLUDE
