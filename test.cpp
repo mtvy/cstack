@@ -8,7 +8,11 @@ int main()
 
     STACK_PRINT_CANARY
 
-    printf("VALID? - %d\n", stack_dtor(&stack));
+    stack_push(&stack, 8);
+
+    STACK_PRINT_CANARY
+
+    stack_dtor(&stack);
 
     return 0;
 }
