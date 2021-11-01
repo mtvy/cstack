@@ -20,10 +20,14 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include <nmmintrin.h>
+
 
 typedef int STACK_DATA_TYPE;
 
 typedef unsigned long long STACK_CANARY_TYPE;
+
+typedef unsigned long long int HASH_TYPE;
 
 const STACK_CANARY_TYPE STACK_BEGIN_CANARY  = 0xCA0C0DE1;
 const STACK_CANARY_TYPE STACK_END_CANARY    = 0xCA0C0DE2;
@@ -50,11 +54,13 @@ struct CStack
 {
     STACK_DATA_TYPE *data     ;
     STACK_STATUS     status   ;
+    HASH_TYPE        hash     ;
     size_t           capacity ;
     size_t           item_size;
-      
 };
 
+
+HASH_TYPE stack_calculate_hash(CStack *stack);
 
 STACK_STATUS stack_is_valid(void *ptr);
 
@@ -73,7 +79,6 @@ STACK_STATUS stack_dtor(CStack *stack);
 STACK_STATUS stack_push(CStack *stack, int item);
 
 STACK_STATUS stack_pop (CStack *stack, STACK_DATA_TYPE* item);
-
 
 
 #define STACK_DUMP (stack, file) stack_dump (stack, file, __LINE__, __FILE__, #stack_name);

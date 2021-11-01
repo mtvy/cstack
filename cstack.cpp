@@ -1,5 +1,28 @@
 #include "cstack.h"
 
+
+HASH_TYPE stack_calculate_hash(CStack *stack)
+{
+    HASH_TYPE data_hash = 0;
+
+    for (char *it = (char*)(stack->data); it < (char*)(stack->data + stack->capacity); it++) 
+    {
+        data_hash = _mm_crc32_u8(data_hash, *it);
+    }
+
+    HASH_TYPE hash = 0;
+
+    hash = _mm_crc32_u64( hash, (HASH_TYPE)(stack->data)      );
+    hash = _mm_crc32_u64( hash, (HASH_TYPE)(stack->capacity)  );
+    hash = _mm_crc32_u64( hash, (HASH_TYPE)(stack->item_size) );
+    hash = _mm_crc32_u64( hash, (HASH_TYPE)(stack->status)    );
+    
+    hash = _mm_crc32_u64( hash, data_hash );
+
+    return hash;
+}
+
+
 STACK_STATUS stack_is_valid(void *ptr)
 {
     if ( ptr == NULL || ptr == (STACK_DATA_TYPE*) STACK_NULL ) return STACK_INVALID;
@@ -29,7 +52,7 @@ STACK_STATUS stack_reallocate(CStack *stack, size_t capacity)
     STACK_DATA_TYPE *dup_data = stack->data;
 
     stack->data = (STACK_DATA_TYPE*) calloc( capacity, sizeof(STACK_DATA_TYPE) );
-
+    
     for (int index = 0; index < stack->item_size; index++)
     {
         stack->data[index] = *dup_data;
@@ -43,12 +66,18 @@ STACK_STATUS stack_reallocate(CStack *stack, size_t capacity)
 
 STACK_STATUS stack_ctor(CStack *stack)
 {
-    stack->capacity = stack->item_size = STACK_INIT_NUM;
+    stack->capacity = stack->item_size = stack->hash = STACK_NULL;
 
     stack_reallocate(stack, stack->capacity);
+
+    stack->capacity = stack->item_size = STACK_INIT_NUM;
     
     stack_put_canary(stack, STACK_NULL     , STACK_BEGIN_CANARY);
     stack_put_canary(stack, STACK_PICK_NEXT, STACK_END_CANARY  );
+
+    stack->hash = stack_calculate_hash(stack);
+
+    printf("HASH:%d\n", stack->hash);
 
     return stack_is_valid(stack);
 }
@@ -84,24 +113,21 @@ STACK_STATUS stack_push(CStack *stack, int item)
     
     stack->item_size++;
 
+    //stack->stack_hash = stack_calculate_hash(stack);
+    //printf("%lld", stack->stack_hash);
+
     return stack_is_valid(stack);
 }
 
 /*
-static stack_status stack_push(stack *this_, STACK_TYPE item)
-{
-
-    #ifdef STACK_USE_DATA_HASH
-        this_->dataHash = stack_calculateDataHash(this_);
-    #endif
-
-    #ifdef STACK_USE_STRUCT_HASH
-        this_->structHash = stack_calculateStructHash(this_);
-    #endif
 
 
-    return STACK_HEALTH_CHECK(this_);
-}
+
+*/
+
+
+
+/*
 
 
 static stack_status stack_dumpToStream(const stack *this_, FILE *out)
