@@ -49,6 +49,11 @@ enum STACK_CONSTS
     STACK_INIT_NUM ,
 };
 
+enum STACK_POISON
+{
+    STACK_DATA_POISON = 666,
+};
+
 
 struct CStack
 {
@@ -59,8 +64,9 @@ struct CStack
     size_t           item_size;
 };
 
+HASH_TYPE sumHash(void *ptr, size_t size, HASH_TYPE hash);
 
-HASH_TYPE stack_calculate_hash(CStack *stack);
+void stack_calculate_hash(CStack *stack);
 
 STACK_STATUS stack_is_valid(void *ptr);
 

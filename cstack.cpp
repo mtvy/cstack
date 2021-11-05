@@ -1,27 +1,25 @@
 #include "cstack.h"
 
 
-HASH_TYPE stack_calculate_hash(CStack *stack)
+HASH_TYPE sumHash(void *ptr, size_t size, HASH_TYPE hash = 0)
 {
-    HASH_TYPE data_hash = 0;
+    HASH_TYPE *copy_ptr = (HASH_TYPE*) ptr;
 
-    for (char *it = (char*)(stack->data); it < (char*)(stack->data + stack->capacity); it++) 
+    for (size_t i = 0; i < size; i++)
     {
-        data_hash = _mm_crc32_u8(data_hash, *it);
+        hash += *(copy_ptr + i);
     }
-
-    HASH_TYPE hash = 0;
-
-    hash = _mm_crc32_u64( hash, (HASH_TYPE)(stack->data)      );
-    hash = _mm_crc32_u64( hash, (HASH_TYPE)(stack->capacity)  );
-    hash = _mm_crc32_u64( hash, (HASH_TYPE)(stack->item_size) );
-    hash = _mm_crc32_u64( hash, (HASH_TYPE)(stack->status)    );
-    
-    hash = _mm_crc32_u64( hash, data_hash );
 
     return hash;
 }
 
+void stack_calculate_hash(CStack *stack)
+{
+    stack->hash = sumHash( &( stack->data     ), sizeof( &stack->data     ));
+    stack->hash = sumHash( &( stack->capacity ), sizeof( &stack->capacity ));
+    stack->hash = sumHash( &( stack->item_size), sizeof( &stack->item_size));
+    stack->hash = sumHash( &( stack->status   ), sizeof( &stack->status   ));
+}
 
 STACK_STATUS stack_is_valid(void *ptr)
 {
@@ -48,7 +46,7 @@ STACK_STATUS stack_dump(CStack *stack, FILE *log_file, const int line, const cha
 }
 
 STACK_STATUS stack_reallocate(CStack *stack, size_t capacity)
-{
+{ 
     STACK_DATA_TYPE *dup_data = stack->data;
 
     stack->data = (STACK_DATA_TYPE*) calloc( capacity, sizeof(STACK_DATA_TYPE) );
@@ -58,7 +56,7 @@ STACK_STATUS stack_reallocate(CStack *stack, size_t capacity)
         stack->data[index] = *dup_data;
         dup_data++;
     }
-    
+
     free(dup_data);
 
     return stack_is_valid(stack);
@@ -68,16 +66,16 @@ STACK_STATUS stack_ctor(CStack *stack)
 {
     stack->capacity = stack->item_size = stack->hash = STACK_NULL;
 
+    stack->data = {};
+
     stack_reallocate(stack, stack->capacity);
 
     stack->capacity = stack->item_size = STACK_INIT_NUM;
-    
+
     stack_put_canary(stack, STACK_NULL     , STACK_BEGIN_CANARY);
     stack_put_canary(stack, STACK_PICK_NEXT, STACK_END_CANARY  );
 
-    stack->hash = stack_calculate_hash(stack);
-
-    printf("HASH:%d\n", stack->hash);
+    stack_calculate_hash(stack);
 
     return stack_is_valid(stack);
 }
@@ -109,12 +107,22 @@ STACK_STATUS stack_push(CStack *stack, int item)
     }
 
     stack->data[stack->item_size - 1] = (STACK_DATA_TYPE) item;
+
     stack_put_canary(stack, stack->capacity, STACK_END_CANARY);
     
     stack->item_size++;
 
-    //stack->stack_hash = stack_calculate_hash(stack);
-    //printf("%lld", stack->stack_hash);
+    stack_calculate_hash(stack);
+
+    return stack_is_valid(stack);
+}
+
+STACK_STATUS stack_pop (CStack *stack, STACK_DATA_TYPE* item)
+{
+    if ( stack_check_health(stack) == STACK_INVALID ) return stack->status;
+
+    *item = stack->data[--stack->item_size];
+    stack->data[stack->item_size] = STACK_DATA_POISON;
 
     return stack_is_valid(stack);
 }

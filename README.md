@@ -10,6 +10,7 @@
 
 ### To do
 1. Basic stack structure 
+2. Add hash check to validation check
 
 ### Done
 
