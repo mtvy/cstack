@@ -48,7 +48,7 @@ STACK_STATUS stack_dump(CStack *stack, FILE *log_file, const int line, const cha
 STACK_STATUS stack_reallocate(CStack *stack, size_t capacity)
 { 
     STACK_DATA_TYPE *dup_data = stack->data;
-
+    
     stack->data = (STACK_DATA_TYPE*) calloc( capacity, sizeof(STACK_DATA_TYPE) );
     
     for (int index = 0; index < stack->item_size; index++)
@@ -57,23 +57,19 @@ STACK_STATUS stack_reallocate(CStack *stack, size_t capacity)
         dup_data++;
     }
 
-    free(dup_data);
-
     return stack_is_valid(stack);
 }
 
 STACK_STATUS stack_ctor(CStack *stack)
 {
-    stack->capacity = stack->item_size = stack->hash = STACK_NULL;
+    stack->item_size = stack->hash = STACK_NULL;
 
-    stack->data = {};
-
-    stack_reallocate(stack, stack->capacity);
-
-    stack->capacity = stack->item_size = STACK_INIT_NUM;
+    stack_reallocate(stack, STACK_INIT_NUM);
 
     stack_put_canary(stack, STACK_NULL     , STACK_BEGIN_CANARY);
     stack_put_canary(stack, STACK_PICK_NEXT, STACK_END_CANARY  );
+
+    stack->capacity = stack->item_size = STACK_INIT_NUM;
 
     stack_calculate_hash(stack);
 
@@ -102,13 +98,12 @@ STACK_STATUS stack_push(CStack *stack, int item)
 
     if ( stack->item_size == stack->capacity )
     {
-        stack->capacity = stack->capacity + 2;
-        stack->status   = stack_reallocate(stack, stack->capacity);
+        stack->status = stack_reallocate(stack, stack->capacity++);
     }
 
     stack->data[stack->item_size - 1] = (STACK_DATA_TYPE) item;
 
-    stack_put_canary(stack, stack->capacity, STACK_END_CANARY);
+    stack_put_canary(stack, stack->capacity - 1, STACK_END_CANARY);
     
     stack->item_size++;
 
@@ -117,12 +112,23 @@ STACK_STATUS stack_push(CStack *stack, int item)
     return stack_is_valid(stack);
 }
 
-STACK_STATUS stack_pop (CStack *stack, STACK_DATA_TYPE* item)
+STACK_STATUS stack_pop (CStack *stack, STACK_DATA_TYPE *item)
 {
     if ( stack_check_health(stack) == STACK_INVALID ) return stack->status;
 
-    *item = stack->data[--stack->item_size];
-    stack->data[stack->item_size] = STACK_DATA_POISON;
+    //size_t dsize = item - stack->data;
+
+    //if (dsize < 1) return stack_is_valid(stack);
+    
+    //stack->capacity = stack->item_size = dsize;
+
+    *item = stack->data[stack->capacity + 1];
+    stack->data[stack->capacity] = STACK_DATA_POISON;
+
+    stack->capacity-- ;
+    stack->item_size--;
+
+    //stack_put_canary(stack, stack->capacity, STACK_END_CANARY);
 
     return stack_is_valid(stack);
 }
