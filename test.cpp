@@ -9,12 +9,8 @@ int main()
     STACK_PRINT(stack.capacity, stack.data)
 
     stack_push(&stack, 8);
-    STACK_PRINT(stack.capacity, stack.data)
     
     stack_push(&stack, -2);
-    STACK_PRINT(stack.capacity, stack.data)
-    
-    stack_push(&stack, 3);
 
     stack_push(&stack, 3);
 
@@ -31,12 +27,24 @@ int main()
     stack_push(&stack, 3);
 
     STACK_PRINT(stack.capacity, stack.data)
-
-    stack_pop(&stack, &stack.data[stack.capacity - 1]);
-
-    STACK_PRINT(stack.capacity, stack.data)
     
-    stack_push(&stack, 3);
+    stack_pop(&stack, &stack.data[stack.item_size - 2]);
+    
+    stack_pop(&stack, &stack.data[stack.item_size - 2]);
+
+    stack_pop(&stack, &stack.data[stack.item_size - 2]);
+
+    stack_pop(&stack, &stack.data[stack.item_size - 2]);
+
+    stack_pop(&stack, &stack.data[stack.item_size - 2]);
+
+    stack_pop(&stack, &stack.data[stack.item_size - 2]);
+
+    stack_pop(&stack, &stack.data[stack.item_size - 2]);
+	    
+    stack_push(&stack, 1);
+    
+    STACK_PRINT(stack.capacity, stack.data)
 
     stack_dtor(&stack);
 

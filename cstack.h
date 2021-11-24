@@ -20,8 +20,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include <nmmintrin.h>
-
 #include <assert.h>
 
 
@@ -41,14 +39,14 @@ const size_t STACK_NUMBER_POISON = -8;
 enum STACK_STATUS
 {
     STACK_INVALID,
-    STACK_VALID  ,
+    STACK_VALID
 };
 
 enum STACK_CONSTS
 {
     STACK_NULL     ,
     STACK_PICK_NEXT,
-    STACK_INIT_NUM ,
+    STACK_INIT_NUM
 };
 
 enum STACK_POISON
@@ -89,11 +87,11 @@ STACK_STATUS stack_push(CStack *stack, int item);
 STACK_STATUS stack_pop (CStack *stack, STACK_DATA_TYPE *item);
 
 
-#define STACK_DUMP (stack, file) stack_dump (stack, file, __LINE__, __FILE__, #stack_name);
+//#define STACK_DUMP (stack, file) stack_dump (stack, file, __LINE__, __FILE__, #stack_name);
 
 
 #define STACK_PRINT(size, data)                                       \
-                for (int index = 0; index < size; index++)            \
+                for (int index = 0; index < size; index++)             \
                 {                                                       \
                     if (data[index] == STACK_DATA_POISON) continue;      \
                     printf(                                               \
@@ -103,14 +101,15 @@ STACK_STATUS stack_pop (CStack *stack, STACK_DATA_TYPE *item);
                           );                                                  \
                 }                                                              \
                 printf("|-------------------------------------------------\n"); \
-
+    
 #define STACK_PRINT_CANARY  printf(                 \
         "|*Data Value After Push Canary*            \n"    \
         "|                     left_ptr: %p         \n"    \
         "|                    right_ptr: %p         \n"    \
         "|-------------------------------------------------\n",\
                             stack.data[0],   stack.data[1]     \
-                                  );                           \
+                                  );                            \
+                          
 
 
 #endif // CSTACK_HEADER_INCLUDE
