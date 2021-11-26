@@ -74,7 +74,7 @@ STACK_STATUS stack_check_health(CStack *stack);
 
 STACK_STATUS stack_put_canary(CStack *stack, size_t bytes, STACK_CANARY_TYPE SIDE_CANARY);
 
-STACK_STATUS stack_dump(CStack *stack, FILE *log_file, const int line, const char* file, const char* stack_name);
+STACK_STATUS stack_dump(CStack *stack, FILE *log, const char* func, const int line, const char *file, const char *item);
 
 STACK_STATUS stack_reallocate(CStack *stack, size_t capacity);
 
@@ -86,9 +86,10 @@ STACK_STATUS stack_push(CStack *stack, int item);
 
 STACK_STATUS stack_pop (CStack *stack, STACK_DATA_TYPE *item);
 
+int UnitTest();
 
-//#define STACK_DUMP (stack, file) stack_dump (stack, file, __LINE__, __FILE__, #stack_name);
 
+#define STACK_DUMP(stack, log) stack_dump(stack, log, __PRETTY_FUNCTION__, __LINE__, __FILE__, "stack");
 
 #define STACK_PRINT(size, data)                                       \
                 for (int index = 0; index < size; index++)             \

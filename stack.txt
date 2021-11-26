@@ -1,0 +1,18 @@
+
+STACK [OK]: [0x11628]
+ Dump for "stack" called in function int UnitTest(), line 159, file "cstack.cpp"
+
+	{
+	item_size = 2 
+	capacity  = 2 
+	hash_sum  = 400000002
+	}
+
+STACK [OK]: [0x11628]
+ Dump for "stack" called in function int UnitTest(), line 178, file "cstack.cpp"
+
+	{
+	item_size = 3 
+	capacity  = 3 
+	hash_sum  = C00000007
+	}

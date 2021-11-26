@@ -38,9 +38,34 @@ STACK_STATUS stack_put_canary(CStack *stack, size_t bytes, STACK_CANARY_TYPE SID
     return stack_is_valid( &(*(STACK_CANARY_TYPE*) (stack->data + bytes) = SIDE_CANARY) );
 }
 
-STACK_STATUS stack_dump(CStack *stack, FILE *log_file, const int line, const char* file, const char* stack_name)
+STACK_STATUS stack_dump(CStack *stack, FILE *log, const char* func, const int line, const char *file, const char *item)
 {   
+    assert (stack);
+    assert (func);
+    assert (file);
+    assert (item);
+
+    unsigned int error_code = stack_is_valid(stack);
     
+    if (error_code == STACK_VALID)
+    {
+        fprintf(log, "\nSTACK [OK]: ");
+    }
+
+    else
+    {
+        fprintf(log, "\nSTACK [ERROR][ERR_CODE: %X]", error_code);
+    }
+
+    fprintf(log, "[%p]\n Dump for \"%s\" called in function "
+	         "%s, line %d, file \"%s\"\n\n"
+	         "\t{\n\titem_size = %lu \n"
+                      "\tcapacity  = %lu \n"
+                      "\thash_sum  = %llX\n"
+                 "\t}\n", &stack->data, item, func, line, file, 
+	         stack->item_size, stack->capacity, stack->hash
+	   );
+
     return stack_is_valid(stack);
 }
 
@@ -123,4 +148,38 @@ STACK_STATUS stack_pop (CStack *stack, STACK_DATA_TYPE *item)
 
     return stack_is_valid(stack);
 }
+
+
+int UnitTest()
+{   
+    CStack stack = {};
+    FILE* log = fopen ("stack.txt", "wa+");
+
+    stack_ctor(&stack);
+    STACK_DUMP(&stack, log)
+    
+    printf ("STACK HASH: %llX\n", stack.hash);
+
+    STACK_PRINT(stack.capacity, stack.data)
+    
+    stack_push(&stack, 8);
+    stack_push(&stack, 2);
+    stack_push(&stack, 4);
+    stack_push(&stack, 9);
+
+    STACK_PRINT(stack.capacity, stack.data)
+
+    stack_pop(&stack, &stack.data[stack.item_size - 2]);
+    stack_pop(&stack, &stack.data[stack.item_size - 2]);
+    stack_pop(&stack, &stack.data[stack.item_size - 2]);
+    
+    STACK_PRINT(stack.capacity, stack.data)
+    
+    STACK_DUMP(&stack, log)
+    stack_dtor(&stack);
+
+    return 0;
+}
+
+
 

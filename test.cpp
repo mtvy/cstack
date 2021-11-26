@@ -2,51 +2,6 @@
 
 int main()
 {
-    CStack stack;
-    stack_ctor(&stack);
-
-    STACK_PRINT_CANARY
-    STACK_PRINT(stack.capacity, stack.data)
-
-    stack_push(&stack, 8);
-    
-    stack_push(&stack, -2);
-
-    stack_push(&stack, 3);
-
-    stack_push(&stack, 3);
-
-    stack_push(&stack, 3);
-
-    stack_push(&stack, -234);
-
-    stack_push(&stack, 123);
-
-    stack_push(&stack, 44);
-
-    stack_push(&stack, 3);
-
-    STACK_PRINT(stack.capacity, stack.data)
-    
-    stack_pop(&stack, &stack.data[stack.item_size - 2]);
-    
-    stack_pop(&stack, &stack.data[stack.item_size - 2]);
-
-    stack_pop(&stack, &stack.data[stack.item_size - 2]);
-
-    stack_pop(&stack, &stack.data[stack.item_size - 2]);
-
-    stack_pop(&stack, &stack.data[stack.item_size - 2]);
-
-    stack_pop(&stack, &stack.data[stack.item_size - 2]);
-
-    stack_pop(&stack, &stack.data[stack.item_size - 2]);
-	    
-    stack_push(&stack, 1);
-    
-    STACK_PRINT(stack.capacity, stack.data)
-
-    stack_dtor(&stack);
-
+    UnitTest();
     return 0;
 }
