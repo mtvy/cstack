@@ -13,6 +13,7 @@ HASH_TYPE sumHash(void *ptr, size_t size, HASH_TYPE hash = 0)
     return hash;
 }
 
+
 void stack_calculate_hash(CStack *stack)
 {
     stack->hash = sumHash( &( stack->data     ), sizeof( &stack->data     ));
@@ -21,6 +22,7 @@ void stack_calculate_hash(CStack *stack)
     stack->hash = sumHash( &( stack->status   ), sizeof( &stack->status   ));
 }
 
+
 STACK_STATUS stack_is_valid(void *ptr)
 {
     if ( ptr == NULL || ptr == (STACK_DATA_TYPE*) STACK_NULL ) return STACK_INVALID;
@@ -28,15 +30,18 @@ STACK_STATUS stack_is_valid(void *ptr)
     return STACK_VALID;
 }
 
+
 STACK_STATUS stack_check_health(CStack *stack)
 {
     return STACK_VALID;
 }
 
+
 STACK_STATUS stack_put_canary(CStack *stack, size_t bytes, STACK_CANARY_TYPE SIDE_CANARY)
 {
     return stack_is_valid( &(*(STACK_CANARY_TYPE*) (stack->data + bytes) = SIDE_CANARY) );
 }
+
 
 STACK_STATUS stack_dump(CStack *stack, FILE *log, const char* func, const int line, const char *file, const char *item)
 {   
@@ -69,6 +74,7 @@ STACK_STATUS stack_dump(CStack *stack, FILE *log, const char* func, const int li
     return stack_is_valid(stack);
 }
 
+
 STACK_STATUS stack_reallocate(CStack *stack, size_t capacity)
 { 
     STACK_DATA_TYPE *dup_data = stack->data;
@@ -83,6 +89,7 @@ STACK_STATUS stack_reallocate(CStack *stack, size_t capacity)
 
     return stack_is_valid(stack);
 }
+
 
 STACK_STATUS stack_ctor(CStack *stack)
 {
@@ -100,6 +107,7 @@ STACK_STATUS stack_ctor(CStack *stack)
     return stack_is_valid(stack);
 }
 
+
 STACK_STATUS stack_dtor(CStack *stack)
 {
     stack_is_valid    (stack);
@@ -113,6 +121,7 @@ STACK_STATUS stack_dtor(CStack *stack)
 
     return stack_is_valid(stack);
 }
+
 
 STACK_STATUS stack_push(CStack *stack, int item)
 {
@@ -135,6 +144,7 @@ STACK_STATUS stack_push(CStack *stack, int item)
 
     return stack_is_valid(stack);
 }
+
 
 STACK_STATUS stack_pop (CStack *stack, STACK_DATA_TYPE *item)
 {
@@ -180,6 +190,3 @@ int UnitTest()
 
     return 0;
 }
-
-
-
