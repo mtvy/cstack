@@ -163,7 +163,7 @@ STACK_STATUS stack_pop (CStack *stack, STACK_DATA_TYPE *item)
 int UnitTest()
 {   
     CStack stack = {};
-    FILE* log = fopen ("stack.txt", "wa+");
+    FILE* log = fopen ("stack.log", "wa+");
 
     stack_ctor(&stack);
     STACK_DUMP(&stack, log)
